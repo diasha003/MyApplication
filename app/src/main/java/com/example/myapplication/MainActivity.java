@@ -1,37 +1,26 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.ListFragment;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
+import android.os.Parcelable;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.Gson;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,14 +29,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity  {
-
-
-    private ArrayList<Model>modelArrayList;
+    private ArrayList<Model> modelArrayList;
     private MyApi myApi;
     private  ListView lv;
     private String BaseURL = "https://jsonplaceholder.typicode.com/";
 
-    //private Button fetchDataButton;
     private Button saveButton;
     private Button exitButton;
     private int numberObject;
@@ -61,6 +47,7 @@ public class MainActivity extends AppCompatActivity  {
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("On create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lv = (ListView) findViewById(R.id.lv);
@@ -69,7 +56,14 @@ public class MainActivity extends AppCompatActivity  {
         exitButton = (Button) findViewById(R.id.exitButton);
         saveButton = (Button) findViewById(R.id.saveButton);
 
-
+        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Model model = result.getData().getParcelableExtra("model");
+                    modelArrayList.replaceAll(m -> m.getId().equals(model.getId()) ? model : m);
+                    custom.notifyDataSetChanged();
+                }
+        );
 
         Bundle arguments = getIntent().getExtras();
         if(arguments != null){
@@ -83,54 +77,31 @@ public class MainActivity extends AppCompatActivity  {
 
         }
 
+        exitButton.setOnClickListener(view -> finish());
 
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
+        saveButton.setOnClickListener(view -> {
+            Gson gson = new Gson();
+            String jsonString = gson.toJson(modelArrayList);
+
+            try(FileOutputStream fileOutputStream =
+                        getApplicationContext().openFileOutput("data.txt", Context.MODE_PRIVATE)) {
+                fileOutputStream.write(jsonString.getBytes());
+                messageOutput("Data is saved to the file data.txt", "Successfully");
+
+            } catch (Exception e) {
+                messageOutput(e.getMessage(), "Exception...");
             }
+
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Gson gson = new Gson();
-                String jsonString = gson.toJson(modelArrayList);
+      lv.setOnItemClickListener((adapterView, view, i, l) -> {
+          Intent i1 = new Intent(MainActivity.this, Details.class);
+          i1.putExtra("model", (Parcelable)modelArrayList.get(i));
 
-                try(FileOutputStream fileOutputStream =
-                            getApplicationContext().openFileOutput("data.txt", Context.MODE_PRIVATE)) {
-                    fileOutputStream.write(jsonString.getBytes());
-                    messageOutput("Data is saved to the file data.txt", "Successfully");
-
-                } catch (Exception e) {
-                    messageOutput(e.getMessage(), "Exception...");
-                }
-
-            }
-        });
-
-
-      lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-          @Override
-          public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-
-              Intent i1 = new Intent(MainActivity.this, Details.class);
-              i1.putParcelableArrayListExtra("KEY", getCustomObjectList());
-              i1.putExtra("id", String.valueOf(i));
-              startActivity(i1);
-
-              //Toast.makeText (getApplicationContext(), TextToast, Toast.LENGTH_SHORT).show();
-          }
+          activityResultLauncher.launch(i1);
       });
 
     }
-
-
-    private ArrayList<Model> getCustomObjectList() {
-        return modelArrayList;
-    }
-
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
@@ -150,14 +121,11 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             public void onResponse(Call<ArrayList<Model>> call, Response<ArrayList<Model>> response) {
 
-                modelArrayList = response.body(); //ответ в виде строки
+                modelArrayList.clear();
+                modelArrayList.addAll(response.body().subList(0, size)); //ответ в виде строки
 
-                ArrayList<Model> newArray = new ArrayList<Model>(modelArrayList.subList(0, size));
-
-                for(int i=0; i<newArray.size(); i++){
-                    custom = new Custom(newArray, MainActivity.this, R.layout.singleview);
-                    lv.setAdapter(custom);
-                }
+                custom = new Custom(modelArrayList, MainActivity.this, R.layout.singleview);
+                lv.setAdapter(custom);
             }
 
             @Override
@@ -165,8 +133,6 @@ public class MainActivity extends AppCompatActivity  {
                 Toast.makeText(MainActivity.this, "Failled to load data", Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
     private void messageOutput(String message, String title){
@@ -190,10 +156,10 @@ public class MainActivity extends AppCompatActivity  {
 
         AlertDialog alertbox2 = alertbox.create();
         alertbox2.show();
-        
     }
 
     private void updateObject (String id){
+        System.out.println("Update object method");
         System.out.println(modelArrayList.get(Integer.parseInt(id)));
     }
 
