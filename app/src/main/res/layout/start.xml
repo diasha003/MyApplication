@@ -4,60 +4,37 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:ignore="MissingConstraints">
-
-    <EditText
-        android:id="@+id/sizeInformation"
-        android:ems="10"
-        android:gravity="center"
-        android:hint="Enter the size of the information"
-        android:inputType="textPersonName"
-        android:textSize="20dp"
-        tools:ignore="MissingConstraints"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        >
+        android:id="@+id/parentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/sizeInformation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:hint="Enter the size of the information"
+            android:textSize="20dp"/>
 
         <Button
             android:id="@+id/fetchButton"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="145dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="FETCH DATA" />
-
-        <View android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="2"/>
+            android:text="FETCH DATA"
+            android:layout_marginHorizontal="16dp"/>
 
         <Button
             android:id="@+id/Exit"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="145dp"
+            android:layout_width="124dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginHorizontal="20dp"
             android:text="Exit" />
 
     </LinearLayout>
-
-
-
-
-</LinearLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Start extends AppCompatActivity {
 
     private Button fetchData;
+
+    private Button exit;
     private EditText editText;
 
 
@@ -27,6 +29,7 @@ public class Start extends AppCompatActivity {
         setContentView(R.layout.start);
 
         fetchData = (Button) findViewById(R.id.fetchButton);
+        exit = (Button) findViewById(R.id.Exit);
         editText = (EditText) findViewById(R.id.sizeInformation);
 
 
@@ -37,14 +40,14 @@ public class Start extends AppCompatActivity {
 
                 try{
                     String numberSize = String.valueOf(editText.getText());
+
                     Exception NumberFormatException = null;
-                    if (Integer.parseInt(numberSize) > 100) throw NumberFormatException;
+                    if (Integer.parseInt(numberSize) > 100 || Integer.parseInt(numberSize)<0) throw NumberFormatException;
 
 
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                     i.putExtra("number", numberSize);
                     startActivity(i);
-
 
                 } catch (Exception e){
                     messageOutput(e.getMessage(), "Exception...");
@@ -54,24 +57,15 @@ public class Start extends AppCompatActivity {
             }
         });
 
-
-        /*mExit.setOnClickListener(new View.OnClickListener() {
+        exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
-            }
-        });*/
 
-          /*editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean focused) {
-                InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (focused)
-                    keyboard.showSoftInput(editText, 0);
-                else
-                    keyboard.hideSoftInputFromWindow(editText.getWindowToken(), 0);
             }
-        });*/
+        });
+
+
 
     }
 

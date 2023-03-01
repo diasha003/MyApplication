@@ -1,5 +1,4 @@
 package com.example.myapplication;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,21 +6,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.gson.Gson;
-
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,6 +36,8 @@ public class MainActivity extends AppCompatActivity  {
 
     private  Custom custom;
 
+
+
     public ArrayList<Model> getModel(){
         return modelArrayList;
     }
@@ -56,6 +54,8 @@ public class MainActivity extends AppCompatActivity  {
         exitButton = (Button) findViewById(R.id.exitButton);
         saveButton = (Button) findViewById(R.id.saveButton);
 
+
+
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -71,13 +71,11 @@ public class MainActivity extends AppCompatActivity  {
             if (arguments.get("number") != null) {
                 numberObject = Integer.parseInt(arguments.getString("number"));
                 displayRetrofitData(numberObject);
-            } else if (arguments.get("id") != null){
-
             }
 
         }
 
-        exitButton.setOnClickListener(view -> finish());
+        exitButton.setOnClickListener(view -> finishAffinity());
 
         saveButton.setOnClickListener(view -> {
             Gson gson = new Gson();
@@ -97,11 +95,12 @@ public class MainActivity extends AppCompatActivity  {
       lv.setOnItemClickListener((adapterView, view, i, l) -> {
           Intent i1 = new Intent(MainActivity.this, Details.class);
           i1.putExtra("model", (Parcelable)modelArrayList.get(i));
-
-          activityResultLauncher.launch(i1);
+          activityResultLauncher.launch(i1); //
       });
 
     }
+
+
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
@@ -123,14 +122,14 @@ public class MainActivity extends AppCompatActivity  {
 
                 modelArrayList.clear();
                 modelArrayList.addAll(response.body().subList(0, size)); //ответ в виде строки
-
                 custom = new Custom(modelArrayList, MainActivity.this, R.layout.singleview);
                 lv.setAdapter(custom);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Model>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Failled to load data", Toast.LENGTH_SHORT).show();
+                messageOutput("Failled to load data", "Exception...");
+                //Toast.makeText(MainActivity.this, "Failled to load data", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -158,9 +157,5 @@ public class MainActivity extends AppCompatActivity  {
         alertbox2.show();
     }
 
-    private void updateObject (String id){
-        System.out.println("Update object method");
-        System.out.println(modelArrayList.get(Integer.parseInt(id)));
-    }
 
 }

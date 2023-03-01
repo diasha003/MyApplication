@@ -37,17 +37,18 @@ tools:context=".MainActivity">
 
                 <EditText
                     android:id="@+id/idEdit"
-                    android:enabled="false"
-                    android:layout_width="340dp"
+                    android:layout_width="276dp"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
                     android:ems="10"
+                    android:enabled="false"
                     android:inputType="textMultiLine"
                     android:textSize="20sp" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="381dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
@@ -55,17 +56,18 @@ tools:context=".MainActivity">
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginRight="10dp"
                     android:text="Title:  "
                     android:textSize="25sp" />
 
                 <EditText
                     android:id="@+id/titleEdit"
-                    android:layout_width="309dp"
+                    android:layout_width="276dp"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:scrollHorizontally="false"
                     android:inputType="textMultiLine"
+                    android:scrollHorizontally="false"
                     android:textSize="20sp" />
 
             </LinearLayout>
@@ -81,12 +83,13 @@ tools:context=".MainActivity">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
+                    android:layout_alignParentBottom="true"
                     android:text="Body: "
                     android:textSize="25sp" />
 
                 <EditText
                     android:id="@+id/bodyEdit"
-                    android:layout_width="308dp"
+                    android:layout_width="275dp"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="textMultiLine"

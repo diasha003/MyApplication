@@ -3,11 +3,8 @@ package com.example.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +40,12 @@ public class Details extends AppCompatActivity {
         titleEdit.setText(model.getTitle());
         bodyEdit.setText(model.getBody());
 
-        backButton.setOnClickListener(view -> finish());
+        backButton.setOnClickListener(view -> {
+            Intent i1 = new Intent(Details.this, MainActivity.class);
+            i1.putExtra("model", model);
+            setResult(Activity.RESULT_OK, i1);
+            finish();
+        });
 
         updateButton.setOnClickListener(view -> {
             String titleUpdate = String.valueOf(titleEdit.getText());

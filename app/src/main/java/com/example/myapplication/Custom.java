@@ -48,8 +48,6 @@ public class Custom extends BaseAdapter {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = layoutInflater.inflate(layout, null);
 
-        //System.out.println("I: " + i);
-
         viewHolder.titletxt = convertView.findViewById(R.id.titletxt);
 
         Model model = modelArrayList.get(i);
